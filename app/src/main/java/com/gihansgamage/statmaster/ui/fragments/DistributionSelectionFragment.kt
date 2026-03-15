@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.gihansgamage.statmaster.R
 import com.gihansgamage.statmaster.databinding.FragmentDistributionSelectionBinding
 import com.gihansgamage.statmaster.models.DistributionType
-import com.google.android.material.card.MaterialCardView
 
 /**
  * Fragment for selecting a statistical distribution type.
@@ -35,38 +33,34 @@ class DistributionSelectionFragment : Fragment() {
     }
 
     private fun setupDistributionCards() {
-        // Normal Distribution Card
         binding.cardNormal.setOnClickListener {
             navigateToCalculator(DistributionType.NORMAL)
         }
 
-        // t-Distribution Card
         binding.cardT.setOnClickListener {
             navigateToCalculator(DistributionType.T)
         }
 
-        // Chi-square Distribution Card
+        // Note: XML id is card_chi_square → binding name is cardChiSquare
         binding.cardChiSquare.setOnClickListener {
             navigateToCalculator(DistributionType.CHISQUARE)
         }
 
-        // F Distribution Card
         binding.cardF.setOnClickListener {
             navigateToCalculator(DistributionType.F)
         }
     }
 
     private fun navigateToCalculator(distribution: DistributionType) {
-        // Pass the selected distribution to CalculatorFragment
-        val bundle = Bundle().apply {
-            putString("DISTRIBUTION_TYPE", distribution.name)
+        val fragment = CalculatorFragment().apply {
+            arguments = Bundle().apply {
+                putString("DISTRIBUTION_TYPE", distribution.name)
+            }
         }
-
-        // Navigate to CalculatorFragment with arguments
-        findNavController().navigate(
-            R.id.action_distributionSelection_to_calculator,
-            bundle
-        )
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {

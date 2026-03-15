@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_distribution_selection"
-        android:name="com.example.statmaster.ui.fragments.DistributionSelectionFragment"
+        android:name="com.gihansgamage.statmaster.ui.fragments.DistributionSelectionFragment"
         android:label="Select Distribution"
         tools:layout="@layout/fragment_distribution_selection">
 
@@ -19,19 +19,19 @@
 
     <fragment
         android:id="@+id/navigation_calculator"
-        android:name="com.example.statmaster.ui.fragments.CalculatorFragment"
+        android:name="com.gihansgamage.statmaster.ui.fragments.CalculatorFragment"
         android:label="Calculator"
         tools:layout="@layout/fragment_calculator" />
 
     <fragment
         android:id="@+id/navigation_tables"
-        android:name="com.example.statmaster.ui.fragments.TableFragment"
+        android:name="com.gihansgamage.statmaster.ui.fragments.TableFragment"
         android:label="Tables"
         tools:layout="@layout/fragment_table" />
 
     <fragment
         android:id="@+id/navigation_formulas"
-        android:name="com.example.statmaster.ui.fragments.FormulasFragment"
+        android:name="com.gihansgamage.statmaster.ui.fragments.FormulasFragment"
         android:label="Formulas"
         tools:layout="@layout/fragment_formulas" />
 
