@@ -57,7 +57,7 @@ object ChiSquareDistribution {
         x = kotlin.math.max(x, 0.001)
 
         // Newton-Raphson iteration
-        for (i in 0..50) {
+        for (i in 0 until 50) {
             val cdfValue = cdf(x, df)
             val pdfValue = pdf(x, df)
 
@@ -81,10 +81,10 @@ object ChiSquareDistribution {
         var sum = pdf(a, df) + pdf(b, df)
 
         for (i in 1 until n step 2) {
-            sum += 4 * pdf(a + i * h, df)
+            sum += 4.0 * pdf(a + i * h, df)
         }
         for (i in 2 until n step 2) {
-            sum += 2 * pdf(a + i * h, df)
+            sum += 2.0 * pdf(a + i * h, df)
         }
 
         return sum * h / 3.0
@@ -115,10 +115,10 @@ object ChiSquareDistribution {
         var xVal = x - 1.0
         var a = p[0]
         for (i in 1 until p.size) {
-            a += p[i] / (xVal + i)
+            a += p[i] / (xVal + i.toDouble())
         }
 
         val t = xVal + g + 0.5
-        return sqrt(2 * PI) * t.pow(xVal + 0.5) * exp(-t) * a
+        return sqrt(2.0 * PI) * t.pow(xVal + 0.5) * exp(-t) * a
     }
 }

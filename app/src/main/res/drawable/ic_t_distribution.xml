@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="60dp"
+    android:height="60dp"
+    android:viewportWidth="60"
+    android:viewportHeight="60">
+
+    <path
+        android:fillColor="@color/t_color"
+        android:pathData="M30,45 L30,45 C30,45 24,38 21,32 C18,26 17,20 19,15 C21,10 25,8 30,8 C35,8 39,10 41,15 C43,20 42,26 39,32 C36,38 30,45 30,45 Z" />
+
+    <path
+        android:strokeColor="@color/white"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M10,45 L50,45" />
+
+    <path
+        android:strokeColor="@color/white"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M30,8 L30,45" />
+
+    <!-- Simplified path representing a small 't' at the bottom -->
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M29,50 L31,50 L31,52 L32,52 L32,53 L31,53 L31,56 L29,56 L29,53 L28,53 L28,52 L29,52 Z" />
+
+</vector>

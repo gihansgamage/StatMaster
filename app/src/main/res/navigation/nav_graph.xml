@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_distribution_selection">
+
+    <fragment
+        android:id="@+id/navigation_distribution_selection"
+        android:name="com.example.statmaster.ui.fragments.DistributionSelectionFragment"
+        android:label="Select Distribution"
+        tools:layout="@layout/fragment_distribution_selection">
+
+        <action
+            android:id="@+id/action_distributionSelection_to_calculator"
+            app:destination="@id/navigation_calculator" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_calculator"
+        android:name="com.example.statmaster.ui.fragments.CalculatorFragment"
+        android:label="Calculator"
+        tools:layout="@layout/fragment_calculator" />
+
+    <fragment
+        android:id="@+id/navigation_tables"
+        android:name="com.example.statmaster.ui.fragments.TableFragment"
+        android:label="Tables"
+        tools:layout="@layout/fragment_table" />
+
+    <fragment
+        android:id="@+id/navigation_formulas"
+        android:name="com.example.statmaster.ui.fragments.FormulasFragment"
+        android:label="Formulas"
+        tools:layout="@layout/fragment_formulas" />
+
+</navigation>

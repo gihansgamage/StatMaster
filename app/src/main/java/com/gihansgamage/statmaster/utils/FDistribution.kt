@@ -10,8 +10,6 @@ object FDistribution {
 
     /**
      * Calculate the probability density function (PDF) for F-distribution
-     * Formula: f(x) = √((df1*x)^(df1) * df2^df2 / (df1*x + df2)^(df1+df2)) /
-     *                  (x * B(df1/2, df2/2))
      */
     fun pdf(x: Double, df1: Double, df2: Double): Double {
         require(df1 > 0 && df2 > 0) { "Degrees of freedom must be positive" }
@@ -36,7 +34,6 @@ object FDistribution {
 
     /**
      * Calculate the cumulative distribution function (CDF) for F-distribution
-     * Uses numerical integration
      */
     fun cdf(x: Double, df1: Double, df2: Double): Double {
         require(df1 > 0 && df2 > 0) { "Degrees of freedom must be positive" }
@@ -50,7 +47,6 @@ object FDistribution {
 
     /**
      * Find the F critical value for a given cumulative probability
-     * Uses Newton-Raphson method
      */
     fun inverseCDF(p: Double, df1: Double, df2: Double): Double {
         require(p in 0.0..1.0) { "Probability must be between 0 and 1" }
@@ -59,7 +55,7 @@ object FDistribution {
         if (p == 0.0) return 0.0
         if (p == 1.0) return Double.POSITIVE_INFINITY
 
-        // Initial guess using normal approximation
+        // Initial guess
         val z = NormalDistribution.inverseCDF(p)
         var x = (1.0 + 2.0 / df2).pow(0.5) * (1.0 - 2.0 / (9.0 * df2) +
                 z * sqrt(2.0 / (9.0 * df2))).pow(-3.0) /
@@ -67,7 +63,7 @@ object FDistribution {
         x = kotlin.math.max(x, 0.001)
 
         // Newton-Raphson iteration
-        for (i in 0..50) {
+        for (i in 0 until 50) {
             val cdfValue = cdf(x, df1, df2)
             val pdfValue = pdf(x, df1, df2)
 
@@ -91,10 +87,10 @@ object FDistribution {
         var sum = pdf(a, df1, df2) + pdf(b, df1, df2)
 
         for (i in 1 until n step 2) {
-            sum += 4 * pdf(a + i * h, df1, df2)
+            sum += 4.0 * pdf(a + i * h, df1, df2)
         }
         for (i in 2 until n step 2) {
-            sum += 2 * pdf(a + i * h, df1, df2)
+            sum += 2.0 * pdf(a + i * h, df1, df2)
         }
 
         return sum * h / 3.0
@@ -132,10 +128,10 @@ object FDistribution {
         var xVal = x - 1.0
         var a = p[0]
         for (i in 1 until p.size) {
-            a += p[i] / (xVal + i)
+            a += p[i] / (xVal + i.toDouble())
         }
 
         val t = xVal + g + 0.5
-        return sqrt(2 * PI) * t.pow(xVal + 0.5) * exp(-t) * a
+        return sqrt(2.0 * PI) * t.pow(xVal + 0.5) * exp(-t) * a
     }
 }

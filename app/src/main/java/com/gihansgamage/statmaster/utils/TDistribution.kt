@@ -4,6 +4,8 @@ import kotlin.math.PI
 import kotlin.math.exp
 import kotlin.math.ln
 import kotlin.math.sqrt
+import kotlin.math.pow
+import kotlin.math.sin
 
 object TDistribution {
 
@@ -55,7 +57,7 @@ object TDistribution {
         var t = NormalDistribution.inverseCDF(p)
 
         // Newton-Raphson iteration
-        for (i in 0..50) {
+        for (i in 0 until 50) {
             val cdfValue = cdf(t, df)
             val pdfValue = pdf(t, df)
 
@@ -78,10 +80,10 @@ object TDistribution {
         var sum = pdf(a, df) + pdf(b, df)
 
         for (i in 1 until n step 2) {
-            sum += 4 * pdf(a + i * h, df)
+            sum += 4.0 * pdf(a + i * h, df)
         }
         for (i in 2 until n step 2) {
-            sum += 2 * pdf(a + i * h, df)
+            sum += 2.0 * pdf(a + i * h, df)
         }
 
         return sum * h / 3.0
@@ -110,14 +112,14 @@ object TDistribution {
             return PI / (sin(PI * x) * gamma(1.0 - x))
         }
 
-        x -= 1.0
+        var xVal = x - 1.0
         var a = p[0]
         for (i in 1 until p.size) {
-            a += p[i] / (x + i)
+            a += p[i] / (xVal + i.toDouble())
         }
 
-        val t = x + g + 0.5
-        return sqrt(2 * PI) * t.pow(x + 0.5) * exp(-t) * a
+        val t = xVal + g + 0.5
+        return sqrt(2.0 * PI) * t.pow(xVal + 0.5) * exp(-t) * a
     }
 
     /**

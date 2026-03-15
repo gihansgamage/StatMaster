@@ -3,6 +3,7 @@ package com.gihansgamage.statmaster.utils
 import kotlin.math.PI
 import kotlin.math.exp
 import kotlin.math.sqrt
+import kotlin.math.pow
 
 object NormalDistribution {
 
@@ -11,8 +12,8 @@ object NormalDistribution {
      * Formula: f(x) = (1 / (σ√(2π))) * e^(-((x-μ)² / (2σ²)))
      */
     fun pdf(x: Double, mean: Double = 0.0, stdDev: Double = 1.0): Double {
-        val exponent = -((x - mean).pow(2.0)) / (2 * stdDev.pow(2.0))
-        val coefficient = 1.0 / (stdDev * sqrt(2 * PI))
+        val exponent = -((x - mean).pow(2.0)) / (2.0 * stdDev.pow(2.0))
+        val coefficient = 1.0 / (stdDev * sqrt(2.0 * PI))
         return coefficient * exp(exponent)
     }
 
@@ -35,7 +36,7 @@ object NormalDistribution {
         val t = 1.0 / (1.0 + p * zAbs)
         val y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * exp(-zAbs * zAbs / 2.0)
 
-        return 0.5 * (1.0 + sign * (2 * y - 1))
+        return 0.5 * (1.0 + sign * (2.0 * y - 1.0))
     }
 
     /**

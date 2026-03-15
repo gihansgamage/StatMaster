@@ -4,6 +4,7 @@ import com.gihansgamage.statmaster.models.DistributionType
 import com.gihansgamage.statmaster.models.GraphData
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.sqrt
 
 object GraphDrawer {
 
@@ -27,7 +28,7 @@ object GraphDrawer {
                 val range = 4.0 * stdDev
                 val start = mean - range
                 val end = mean + range
-                val step = (end - start) / 200
+                val step = (end - start) / 200.0
 
                 var x = start
                 while (x <= end) {
@@ -66,14 +67,14 @@ object GraphDrawer {
                 val t = parameters["t"]
 
                 val range = when {
-                    df > 30 -> 4.0
-                    df > 10 -> 3.5
+                    df > 30.0 -> 4.0
+                    df > 10.0 -> 3.5
                     else -> 3.0
                 }
 
                 val start = -range
                 val end = range
-                val step = (end - start) / 200
+                val step = (end - start) / 200.0
 
                 var x = start
                 while (x <= end) {
@@ -99,7 +100,7 @@ object GraphDrawer {
 
                 val start = 0.0
                 val end = mean + range
-                val step = (end - start) / 200
+                val step = (end - start) / 200.0
 
                 var x = start
                 while (x <= end) {
@@ -141,7 +142,7 @@ object GraphDrawer {
                 val end = max(mean * 3.0, 10.0)
 
                 val start = 0.0
-                val step = end / 200
+                val step = end / 200.0
 
                 var x = start
                 while (x <= end) {

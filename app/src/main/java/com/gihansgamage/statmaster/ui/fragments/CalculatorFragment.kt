@@ -14,7 +14,6 @@ import com.gihansgamage.statmaster.utils.*
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -38,6 +37,7 @@ class CalculatorFragment : Fragment() {
     private lateinit var distributionChart: LineChart
 
     private var selectedDistribution = DistributionType.NORMAL
+    private var currentGraphData: GraphData? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,41 +88,41 @@ class CalculatorFragment : Fragment() {
 
     private fun updateInputFields() {
         // Hide all input fields first
-        view?.findViewById<TextInputLayout>(R.id.z_score_layout)?.visibility = View.GONE
-        view?.findViewById<TextInputLayout>(R.id.df_layout)?.visibility = View.GONE
-        view?.findViewById<TextInputLayout>(R.id.df1_layout)?.visibility = View.GONE
-        view?.findViewById<TextInputLayout>(R.id.df2_layout)?.visibility = View.GONE
-        view?.findViewById<TextInputLayout>(R.id.mean_layout)?.visibility = View.GONE
-        view?.findViewById<TextInputLayout>(R.id.std_dev_layout)?.visibility = View.GONE
+        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.visibility = View.GONE
+        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df_layout)?.visibility = View.GONE
+        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df1_layout)?.visibility = View.GONE
+        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df2_layout)?.visibility = View.GONE
+        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.mean_layout)?.visibility = View.GONE
+        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.std_dev_layout)?.visibility = View.GONE
 
         // Show relevant input fields based on distribution
         when (selectedDistribution) {
             DistributionType.NORMAL -> {
-                view?.findViewById<TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
-                view?.findViewById<TextInputLayout>(R.id.mean_layout)?.visibility = View.VISIBLE
-                view?.findViewById<TextInputLayout>(R.id.std_dev_layout)?.visibility = View.VISIBLE
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.mean_layout)?.visibility = View.VISIBLE
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.std_dev_layout)?.visibility = View.VISIBLE
             }
             DistributionType.T -> {
-                view?.findViewById<TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
-                view?.findViewById<TextInputLayout>(R.id.z_score_layout)?.hint = "t-value"
-                view?.findViewById<TextInputLayout>(R.id.df_layout)?.visibility = View.VISIBLE
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.hint = "t-value"
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df_layout)?.visibility = View.VISIBLE
             }
             DistributionType.CHISQUARE -> {
-                view?.findViewById<TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
-                view?.findViewById<TextInputLayout>(R.id.z_score_layout)?.hint = "Chi-square value"
-                view?.findViewById<TextInputLayout>(R.id.df_layout)?.visibility = View.VISIBLE
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.hint = "Chi-square value"
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df_layout)?.visibility = View.VISIBLE
             }
             DistributionType.F -> {
-                view?.findViewById<TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
-                view?.findViewById<TextInputLayout>(R.id.z_score_layout)?.hint = "F-value"
-                view?.findViewById<TextInputLayout>(R.id.df1_layout)?.visibility = View.VISIBLE
-                view?.findViewById<TextInputLayout>(R.id.df2_layout)?.visibility = View.VISIBLE
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.hint = "F-value"
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df1_layout)?.visibility = View.VISIBLE
+                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df2_layout)?.visibility = View.VISIBLE
             }
         }
 
         // Reset hints
         if (selectedDistribution == DistributionType.NORMAL) {
-            view?.findViewById<TextInputLayout>(R.id.z_score_layout)?.hint = getString(R.string.z_score)
+            view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.hint = getString(R.string.z_score)
         }
 
         // Hide results
@@ -132,22 +132,21 @@ class CalculatorFragment : Fragment() {
 
     private fun performCalculation() {
         try {
-            val result = when (selectedDistribution) {
+            when (selectedDistribution) {
                 DistributionType.NORMAL -> calculateNormal()
                 DistributionType.T -> calculateT()
                 DistributionType.CHISQUARE -> calculateChiSquare()
                 DistributionType.F -> calculateF()
             }
 
-            displayResults(result)
-            drawGraph(result.graphData)
+            drawGraph(currentGraphData)
 
         } catch (e: Exception) {
             Toast.makeText(requireContext(), getString(R.string.error_invalid_input), Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun calculateNormal(): Pair<String, GraphData?> {
+    private fun calculateNormal() {
         val z = zScoreInput.text.toString().toDoubleOrNull()
             ?: throw IllegalArgumentException("Invalid Z-score")
         val mean = meanInput.text.toString().toDoubleOrNull() ?: 0.0
@@ -171,16 +170,16 @@ class CalculatorFragment : Fragment() {
             Two-tailed Probability: ${String.format("%.6f", twoTailed)}
         """.trimIndent()
 
-        val graphData = GraphDrawer.generateGraphData(
+        currentGraphData = GraphDrawer.generateGraphData(
             DistributionType.NORMAL,
             mapOf("z" to z, "mean" to mean, "stdDev" to stdDev),
             z
         )
 
-        return resultText to graphData
+        displayResults(resultText)
     }
 
-    private fun calculateT(): Pair<String, GraphData?> {
+    private fun calculateT() {
         val t = zScoreInput.text.toString().toDoubleOrNull()
             ?: throw IllegalArgumentException("Invalid t-value")
         val df = dfInput.text.toString().toDoubleOrNull()
@@ -203,16 +202,16 @@ class CalculatorFragment : Fragment() {
             Two-tailed P-value: ${String.format("%.6f", twoTailed)}
         """.trimIndent()
 
-        val graphData = GraphDrawer.generateGraphData(
+        currentGraphData = GraphDrawer.generateGraphData(
             DistributionType.T,
             mapOf("t" to t, "df" to df),
             t
         )
 
-        return resultText to graphData
+        displayResults(resultText)
     }
 
-    private fun calculateChiSquare(): Pair<String, GraphData?> {
+    private fun calculateChiSquare() {
         val chi = zScoreInput.text.toString().toDoubleOrNull()
             ?: throw IllegalArgumentException("Invalid Chi-square value")
         val df = dfInput.text.toString().toDoubleOrNull()
@@ -235,16 +234,16 @@ class CalculatorFragment : Fragment() {
             P-value (P(χ² > $chi)): ${String.format("%.6f", pValue)}
         """.trimIndent()
 
-        val graphData = GraphDrawer.generateGraphData(
+        currentGraphData = GraphDrawer.generateGraphData(
             DistributionType.CHISQUARE,
             mapOf("chi" to chi, "df" to df),
             chi
         )
 
-        return resultText to graphData
+        displayResults(resultText)
     }
 
-    private fun calculateF(): Pair<String, GraphData?> {
+    private fun calculateF() {
         val f = zScoreInput.text.toString().toDoubleOrNull()
             ?: throw IllegalArgumentException("Invalid F-value")
         val df1 = df1Input.text.toString().toDoubleOrNull()
@@ -270,13 +269,13 @@ class CalculatorFragment : Fragment() {
             P-value (P(F > $f)): ${String.format("%.6f", pValue)}
         """.trimIndent()
 
-        val graphData = GraphDrawer.generateGraphData(
+        currentGraphData = GraphDrawer.generateGraphData(
             DistributionType.F,
             mapOf("f" to f, "df1" to df1, "df2" to df2),
             f
         )
 
-        return resultText to graphData
+        displayResults(resultText)
     }
 
     private fun displayResults(resultText: String) {
