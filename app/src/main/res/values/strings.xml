@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">StatMaster</string>
+
+    <!-- Navigation -->
+    <string name="nav_calculator">Calculator</string>
+    <string name="nav_tables">Tables</string>
+    <string name="nav_formulas">Formulas</string>
+
+    <!-- Distribution Names -->
+    <string name="distribution_normal">Normal Distribution</string>
+    <string name="distribution_t">Student\'s t Distribution</string>
+    <string name="distribution_chisquare">Chi-square Distribution</string>
+    <string name="distribution_f">F Distribution</string>
+
+    <!-- Table Names -->
+    <string name="table_z">Z-table</string>
+    <string name="table_t">t-table</string>
+    <string name="table_chisquare">χ²-table</string>
+    <string name="table_f">F-table</string>
+
+    <!-- Uses -->
+    <string name="use_normal">Probability, hypothesis testing</string>
+    <string name="use_t">Small sample tests</string>
+    <string name="use_chisquare">Goodness of fit, independence</string>
+    <string name="use_f">ANOVA, variance comparison</string>
+
+    <!-- Calculator -->
+    <string name="select_distribution">Select Distribution</string>
+    <string name="enter_parameters">Enter Parameters</string>
+    <string name="calculate">Calculate</string>
+    <string name="result">Result</string>
+    <string name="show_graph">Show Graph</string>
+
+    <!-- Parameters -->
+    <string name="z_score">Z-Score</string>
+    <string name="degrees_of_freedom">Degrees of Freedom (df)</string>
+    <string name="df1">Degrees of Freedom 1 (df1)</string>
+    <string name="df2">Degrees of Freedom 2 (df2)</string>
+    <string name="probability">Probability (p)</string>
+    <string name="alpha">Alpha (α)</string>
+
+    <!-- Results -->
+    <string name="cumulative_probability">Cumulative Probability</string>
+    <string name="critical_value">Critical Value</string>
+    <string name="p_value">P-Value</string>
+
+    <!-- Common -->
+    <string name="error_invalid_input">Invalid input. Please check your values.</string>
+    <string name="error_calculation">Error in calculation.</string>
+    <string name="please_enter">Please enter</string>
+    <string name="graph">Distribution Graph</string>
+
+    <!-- Formulas -->
+    <string name="formula_normal">Normal Distribution Formula</string>
+    <string name="formula_t">t-Distribution Formula</string>
+    <string name="formula_chisquare">Chi-square Formula</string>
+    <string name="formula_f">F-Distribution Formula</string>
+</resources>

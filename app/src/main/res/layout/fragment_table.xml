@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <!-- Distribution Selection -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        android:elevation="4dp"
+        android:padding="8dp">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/distribution_chips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distribution_normal"
+                android:checked="true"
+                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distribution_t"
+                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_chisquare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distribution_chisquare"
+                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_f"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distribution_f"
+                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </HorizontalScrollView>
+
+    <!-- Table Info -->
+    <TextView
+        android:id="@+id/table_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:textSize="14sp"
+        android:textColor="@color/text_secondary"
+        android:background="@color/primary_light"
+        android:gravity="center" />
+
+    <!-- Table Container -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <TableLayout
+                android:id="@+id/distribution_table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:stretchColumns="*" />
+
+        </ScrollView>
+
+    </HorizontalScrollView>
+
+</LinearLayout>
