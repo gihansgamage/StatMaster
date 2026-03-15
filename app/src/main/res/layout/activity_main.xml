@@ -7,7 +7,7 @@
     android:background="@color/background"
     tools:context=".MainActivity">
 
-    <!-- Toolbar -->
+    <!-- Single Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -25,6 +25,18 @@
             android:textStyle="bold"
             android:textColor="@color/white"
             android:layout_gravity="center" />
+
+        <!-- Info Button -->
+        <ImageButton
+            android:id="@+id/btn_info"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_info_details"
+            android:tint="@color/white"
+            android:contentDescription="About"
+            android:padding="12dp" />
 
     </androidx.appcompat.widget.Toolbar>
 

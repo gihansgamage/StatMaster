@@ -1,6 +1,8 @@
 package com.gihansgamage.statmaster
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.gihansgamage.statmaster.ui.fragments.CalculatorFragment
@@ -19,7 +21,6 @@ class MainActivity : AppCompatActivity() {
         initViews()
         setupBottomNavigation()
 
-        // Load initial fragment
         if (savedInstanceState == null) {
             loadFragment(CalculatorFragment())
         }
@@ -27,23 +28,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() {
         bottomNavigation = findViewById(R.id.bottom_navigation)
+
+        // Wire up the info button directly — no ActionBar/menu needed
+        findViewById<ImageButton>(R.id.btn_info).setOnClickListener {
+            showAppInfoDialog()
+        }
     }
 
     private fun setupBottomNavigation() {
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_calculator -> {
-                    loadFragment(CalculatorFragment())
-                    true
-                }
-                R.id.nav_tables -> {
-                    loadFragment(TableFragment())
-                    true
-                }
-                R.id.nav_formulas -> {
-                    loadFragment(FormulasFragment())
-                    true
-                }
+                R.id.nav_calculator -> { loadFragment(CalculatorFragment()); true }
+                R.id.nav_tables     -> { loadFragment(TableFragment());      true }
+                R.id.nav_formulas   -> { loadFragment(FormulasFragment());   true }
                 else -> false
             }
         }
@@ -53,5 +50,15 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
+    }
+
+    private fun showAppInfoDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_app_info, null)
+
+        AlertDialog.Builder(this, R.style.AppInfoDialog)
+            .setView(dialogView)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
     }
 }
