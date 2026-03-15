@@ -5,346 +5,395 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.gihansgamage.statmaster.R
 import com.gihansgamage.statmaster.models.DistributionType
 import com.gihansgamage.statmaster.models.GraphData
 import com.gihansgamage.statmaster.utils.*
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.textfield.TextInputEditText
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class CalculatorFragment : Fragment() {
 
-    private lateinit var distributionRadioGroup: RadioGroup
-    private lateinit var zScoreInput: TextInputEditText
-    private lateinit var dfInput: TextInputEditText
-    private lateinit var df1Input: TextInputEditText
-    private lateinit var df2Input: TextInputEditText
-    private lateinit var meanInput: TextInputEditText
-    private lateinit var stdDevInput: TextInputEditText
+    // --- Views ---
+    private lateinit var radioGroup: RadioGroup
+    private lateinit var paramsHint: TextView
     private lateinit var calculateButton: MaterialButton
     private lateinit var resultsCard: MaterialCardView
-    private lateinit var resultText: android.widget.TextView
+    private lateinit var resultText: TextView
     private lateinit var graphCard: MaterialCardView
     private lateinit var distributionChart: LineChart
 
+    // Normal
+    private lateinit var zScoreLayout: TextInputLayout
+    private lateinit var zScoreInput: TextInputEditText
+    private lateinit var meanLayout: TextInputLayout
+    private lateinit var meanInput: TextInputEditText
+    private lateinit var stdDevLayout: TextInputLayout
+    private lateinit var stdDevInput: TextInputEditText
+
+    // t / chi-square shared
+    private lateinit var dfLayout: TextInputLayout
+    private lateinit var dfInput: TextInputEditText
+    private lateinit var testStatLayout: TextInputLayout
+    private lateinit var testStatInput: TextInputEditText
+    private lateinit var alphaLayout: TextInputLayout
+    private lateinit var alphaInput: TextInputEditText
+
+    // F
+    private lateinit var df1Layout: TextInputLayout
+    private lateinit var df1Input: TextInputEditText
+    private lateinit var df2Layout: TextInputLayout
+    private lateinit var df2Input: TextInputEditText
+    private lateinit var fValueLayout: TextInputLayout
+    private lateinit var fValueInput: TextInputEditText
+    private lateinit var fAlphaLayout: TextInputLayout
+    private lateinit var fAlphaInput: TextInputEditText
+
     private var selectedDistribution = DistributionType.NORMAL
-    private var currentGraphData: GraphData? = null
+
+    private val allLayouts get() = listOf(
+        zScoreLayout, meanLayout, stdDevLayout,
+        dfLayout, testStatLayout, alphaLayout,
+        df1Layout, df2Layout, fValueLayout, fAlphaLayout
+    )
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_calculator, container, false)
-    }
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_calculator, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initViews(view)
         setupListeners()
+        updateInputFields()
     }
 
     private fun initViews(view: View) {
-        distributionRadioGroup = view.findViewById(R.id.distribution_radio_group)
-        zScoreInput = view.findViewById(R.id.z_score_input)
-        dfInput = view.findViewById(R.id.df_input)
-        df1Input = view.findViewById(R.id.df1_input)
-        df2Input = view.findViewById(R.id.df2_input)
-        meanInput = view.findViewById(R.id.mean_input)
-        stdDevInput = view.findViewById(R.id.std_dev_input)
-        calculateButton = view.findViewById(R.id.calculate_button)
-        resultsCard = view.findViewById(R.id.results_card)
-        resultText = view.findViewById(R.id.result_text)
-        graphCard = view.findViewById(R.id.graph_card)
+        radioGroup        = view.findViewById(R.id.distribution_radio_group)
+        paramsHint        = view.findViewById(R.id.params_hint)
+        calculateButton   = view.findViewById(R.id.calculate_button)
+        resultsCard       = view.findViewById(R.id.results_card)
+        resultText        = view.findViewById(R.id.result_text)
+        graphCard         = view.findViewById(R.id.graph_card)
         distributionChart = view.findViewById(R.id.distribution_chart)
+
+        zScoreLayout  = view.findViewById(R.id.z_score_layout)
+        zScoreInput   = view.findViewById(R.id.z_score_input)
+        meanLayout    = view.findViewById(R.id.mean_layout)
+        meanInput     = view.findViewById(R.id.mean_input)
+        stdDevLayout  = view.findViewById(R.id.std_dev_layout)
+        stdDevInput   = view.findViewById(R.id.std_dev_input)
+
+        dfLayout       = view.findViewById(R.id.df_layout)
+        dfInput        = view.findViewById(R.id.df_input)
+        testStatLayout = view.findViewById(R.id.test_stat_layout)
+        testStatInput  = view.findViewById(R.id.test_stat_input)
+        alphaLayout    = view.findViewById(R.id.alpha_layout)
+        alphaInput     = view.findViewById(R.id.alpha_input)
+
+        df1Layout    = view.findViewById(R.id.df1_layout)
+        df1Input     = view.findViewById(R.id.df1_input)
+        df2Layout    = view.findViewById(R.id.df2_layout)
+        df2Input     = view.findViewById(R.id.df2_input)
+        fValueLayout = view.findViewById(R.id.f_value_layout)
+        fValueInput  = view.findViewById(R.id.f_value_input)
+        fAlphaLayout = view.findViewById(R.id.f_alpha_layout)
+        fAlphaInput  = view.findViewById(R.id.f_alpha_input)
     }
 
     private fun setupListeners() {
-        distributionRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
             selectedDistribution = when (checkedId) {
-                R.id.radio_normal -> DistributionType.NORMAL
-                R.id.radio_t -> DistributionType.T
+                R.id.radio_normal    -> DistributionType.NORMAL
+                R.id.radio_t         -> DistributionType.T
                 R.id.radio_chisquare -> DistributionType.CHISQUARE
-                R.id.radio_f -> DistributionType.F
-                else -> DistributionType.NORMAL
+                R.id.radio_f         -> DistributionType.F
+                else                 -> DistributionType.NORMAL
             }
             updateInputFields()
         }
-
-        calculateButton.setOnClickListener {
-            performCalculation()
-        }
+        calculateButton.setOnClickListener { performCalculation() }
     }
+
+    // ── Show/hide the right fields ────────────────────────────────────────────
 
     private fun updateInputFields() {
-        // Hide all input fields first
-        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.visibility = View.GONE
-        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df_layout)?.visibility = View.GONE
-        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df1_layout)?.visibility = View.GONE
-        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df2_layout)?.visibility = View.GONE
-        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.mean_layout)?.visibility = View.GONE
-        view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.std_dev_layout)?.visibility = View.GONE
+        allLayouts.forEach { it.visibility = View.GONE }
+        resultsCard.visibility = View.GONE
+        graphCard.visibility   = View.GONE
 
-        // Show relevant input fields based on distribution
         when (selectedDistribution) {
             DistributionType.NORMAL -> {
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.mean_layout)?.visibility = View.VISIBLE
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.std_dev_layout)?.visibility = View.VISIBLE
+                paramsHint.text = "Enter a Z-score (or any x value with μ and σ) to find cumulative probability."
+                zScoreLayout.hint = "Z-Score (or x value)"
+                show(zScoreLayout, meanLayout, stdDevLayout)
             }
             DistributionType.T -> {
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.hint = "t-value"
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df_layout)?.visibility = View.VISIBLE
+                paramsHint.text = "Enter df, the observed t-value, and α to get the critical value and decision."
+                testStatLayout.hint = "Observed t-value"
+                show(dfLayout, testStatLayout, alphaLayout)
             }
             DistributionType.CHISQUARE -> {
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.hint = "Chi-square value"
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df_layout)?.visibility = View.VISIBLE
+                paramsHint.text = "Enter df, the observed χ² value, and α to get the critical value and decision."
+                testStatLayout.hint = "Observed χ² value"
+                show(dfLayout, testStatLayout, alphaLayout)
             }
             DistributionType.F -> {
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.visibility = View.VISIBLE
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.hint = "F-value"
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df1_layout)?.visibility = View.VISIBLE
-                view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.df2_layout)?.visibility = View.VISIBLE
+                paramsHint.text = "Enter df₁ (numerator), df₂ (denominator), the observed F-value, and α."
+                show(df1Layout, df2Layout, fValueLayout, fAlphaLayout)
             }
         }
-
-        // Reset hints
-        if (selectedDistribution == DistributionType.NORMAL) {
-            view?.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.z_score_layout)?.hint = getString(R.string.z_score)
-        }
-
-        // Hide results
-        resultsCard.visibility = View.GONE
-        graphCard.visibility = View.GONE
     }
+
+    private fun show(vararg layouts: TextInputLayout) =
+        layouts.forEach { it.visibility = View.VISIBLE }
+
+    // ── Calculations ──────────────────────────────────────────────────────────
 
     private fun performCalculation() {
         try {
-            when (selectedDistribution) {
-                DistributionType.NORMAL -> calculateNormal()
-                DistributionType.T -> calculateT()
-                DistributionType.CHISQUARE -> calculateChiSquare()
-                DistributionType.F -> calculateF()
+            val result = when (selectedDistribution) {
+                DistributionType.NORMAL    -> calcNormal()
+                DistributionType.T         -> calcT()
+                DistributionType.CHISQUARE -> calcChiSquare()
+                DistributionType.F         -> calcF()
             }
-
-            drawGraph(currentGraphData)
-
+            resultText.text = result.text
+            resultsCard.visibility = View.VISIBLE
+            drawGraph(result.graphData)
+        } catch (e: IllegalArgumentException) {
+            Toast.makeText(requireContext(), e.message ?: "Invalid input", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), getString(R.string.error_invalid_input), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Invalid input — please check your values.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun calculateNormal() {
-        val z = zScoreInput.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Invalid Z-score")
-        val mean = meanInput.text.toString().toDoubleOrNull() ?: 0.0
-        val stdDev = stdDevInput.text.toString().toDoubleOrNull() ?: 1.0
+    // ── Normal ────────────────────────────────────────────────────────────────
 
-        if (stdDev <= 0) {
-            throw IllegalArgumentException("Standard deviation must be positive")
+    private fun calcNormal(): CalcResult {
+        val x      = zScoreInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Z-score / x value is required.")
+        val mean   = meanInput.text.toString().toDoubleOrNull() ?: 0.0
+        val stdDev = stdDevInput.text.toString().toDoubleOrNull() ?: 1.0
+        if (stdDev <= 0) throw IllegalArgumentException("Standard deviation must be > 0.")
+
+        val z       = (x - mean) / stdDev
+        val cdf     = NormalDistribution.cdf(z)
+        val pdf     = NormalDistribution.pdf(x, mean, stdDev)
+        val upper   = 1.0 - cdf
+        val twoTail = NormalDistribution.twoTailedProbability(z)
+
+        val text = buildString {
+            appendLine("── Inputs ──────────────────────")
+            appendLine("  x = $x,  μ = $mean,  σ = $stdDev")
+            appendLine("  Z-score = ${fmt(z)}")
+            appendLine()
+            appendLine("── Probabilities ───────────────")
+            appendLine("  P(X ≤ $x)  =  ${fmt(cdf)}")
+            appendLine("  P(X > $x)  =  ${fmt(upper)}")
+            appendLine("  P(|Z| > ${fmt(kotlin.math.abs(z))}) = ${fmt(twoTail)}  (two-tail)")
+            appendLine()
+            appendLine("── Density ─────────────────────")
+            appendLine("  f($x) = ${fmt(pdf)}")
         }
 
-        val cdfValue = NormalDistribution.cdf(z)
-        val pdfValue = NormalDistribution.pdf(z, mean, stdDev)
-        val twoTailed = NormalDistribution.twoTailedProbability(z)
-
-        val resultText = """
-            Z-Score: $z
-            Mean (μ): $mean
-            Std Dev (σ): $stdDev
-            
-            Cumulative Probability (P(Z ≤ $z)): ${String.format("%.6f", cdfValue)}
-            Probability Density: ${String.format("%.6f", pdfValue)}
-            Two-tailed Probability: ${String.format("%.6f", twoTailed)}
-        """.trimIndent()
-
-        currentGraphData = GraphDrawer.generateGraphData(
+        val graphData = GraphDrawer.generateGraphData(
             DistributionType.NORMAL,
             mapOf("z" to z, "mean" to mean, "stdDev" to stdDev),
             z
         )
-
-        displayResults(resultText)
+        return CalcResult(text, graphData)
     }
 
-    private fun calculateT() {
-        val t = zScoreInput.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Invalid t-value")
-        val df = dfInput.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Invalid degrees of freedom")
+    // ── Student's t ───────────────────────────────────────────────────────────
 
-        if (df <= 0) {
-            throw IllegalArgumentException("Degrees of freedom must be positive")
+    private fun calcT(): CalcResult {
+        val df    = dfInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Degrees of freedom (df) is required.")
+        val tObs  = testStatInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Observed t-value is required.")
+        val alpha = alphaInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Significance level α is required.")
+        if (df <= 0)             throw IllegalArgumentException("df must be > 0.")
+        if (alpha !in 0.0..1.0) throw IllegalArgumentException("α must be between 0 and 1.")
+
+        val cdf              = TDistribution.cdf(tObs, df)
+        val upperP           = 1.0 - cdf
+        val twoTailP         = 2.0 * minOf(cdf, upperP)
+        val criticalOneTail  = TDistribution.inverseCDF(1.0 - alpha, df)
+        val criticalTwoTail  = TDistribution.inverseCDF(1.0 - alpha / 2.0, df)
+        val rejectOneTail    = tObs > criticalOneTail
+        val rejectTwoTail    = kotlin.math.abs(tObs) > criticalTwoTail
+
+        val text = buildString {
+            appendLine("── Inputs ──────────────────────")
+            appendLine("  df = ${df.toInt()},  t = $tObs,  α = $alpha")
+            appendLine()
+            appendLine("── Probabilities ───────────────")
+            appendLine("  P(T ≤ $tObs) = ${fmt(cdf)}")
+            appendLine("  P(T > $tObs) = ${fmt(upperP)}   (one-tail p-value)")
+            appendLine("  Two-tail p-value = ${fmt(twoTailP)}")
+            appendLine()
+            appendLine("── Critical Values ─────────────")
+            appendLine("  One-tail  t* (α=$alpha)   = ${fmt(criticalOneTail)}")
+            appendLine("  Two-tail  t* (α/2=${alpha/2}) = ±${fmt(criticalTwoTail)}")
+            appendLine()
+            appendLine("── Decision (α = $alpha) ────────")
+            appendLine("  One-tail: ${if (rejectOneTail) "REJECT H₀  (t > t*)" else "Fail to reject H₀"}")
+            appendLine("  Two-tail: ${if (rejectTwoTail) "REJECT H₀  (|t| > t*)" else "Fail to reject H₀"}")
         }
 
-        val cdfValue = TDistribution.cdf(t, df)
-        val pdfValue = TDistribution.pdf(t, df)
-        val twoTailed = 2.0 * (1.0 - cdfValue)
-
-        val resultText = """
-            t-value: $t
-            Degrees of Freedom: $df
-            
-            Cumulative Probability (P(T ≤ $t)): ${String.format("%.6f", cdfValue)}
-            Probability Density: ${String.format("%.6f", pdfValue)}
-            Two-tailed P-value: ${String.format("%.6f", twoTailed)}
-        """.trimIndent()
-
-        currentGraphData = GraphDrawer.generateGraphData(
-            DistributionType.T,
-            mapOf("t" to t, "df" to df),
-            t
+        val graphData = GraphDrawer.generateGraphData(
+            DistributionType.T, mapOf("t" to tObs, "df" to df), tObs
         )
-
-        displayResults(resultText)
+        return CalcResult(text, graphData)
     }
 
-    private fun calculateChiSquare() {
-        val chi = zScoreInput.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Invalid Chi-square value")
-        val df = dfInput.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Invalid degrees of freedom")
+    // ── Chi-square ────────────────────────────────────────────────────────────
 
-        if (chi < 0 || df <= 0) {
-            throw IllegalArgumentException("Invalid parameters")
+    private fun calcChiSquare(): CalcResult {
+        val df     = dfInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Degrees of freedom (df) is required.")
+        val chiObs = testStatInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Observed χ² value is required.")
+        val alpha  = alphaInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Significance level α is required.")
+        if (df <= 0)             throw IllegalArgumentException("df must be > 0.")
+        if (chiObs < 0)         throw IllegalArgumentException("χ² value must be ≥ 0.")
+        if (alpha !in 0.0..1.0) throw IllegalArgumentException("α must be between 0 and 1.")
+
+        val cdf      = ChiSquareDistribution.cdf(chiObs, df)
+        val pValue   = 1.0 - cdf
+        val critical = ChiSquareDistribution.inverseCDF(1.0 - alpha, df)
+        val reject   = chiObs > critical
+
+        val text = buildString {
+            appendLine("── Inputs ──────────────────────")
+            appendLine("  df = ${df.toInt()},  χ² = $chiObs,  α = $alpha")
+            appendLine()
+            appendLine("── Probabilities ───────────────")
+            appendLine("  P(χ² ≤ $chiObs) = ${fmt(cdf)}")
+            appendLine("  P(χ² > $chiObs) = ${fmt(pValue)}   (p-value)")
+            appendLine()
+            appendLine("── Critical Value ───────────────")
+            appendLine("  χ²* (α=$alpha, df=${df.toInt()}) = ${fmt(critical)}")
+            appendLine()
+            appendLine("── Decision (α = $alpha) ────────")
+            appendLine("  ${if (reject) "REJECT H₀  (χ² > χ²*)" else "Fail to reject H₀"}")
         }
 
-        val cdfValue = ChiSquareDistribution.cdf(chi, df)
-        val pdfValue = ChiSquareDistribution.pdf(chi, df)
-        val pValue = 1.0 - cdfValue
-
-        val resultText = """
-            Chi-square value: $chi
-            Degrees of Freedom: $df
-            
-            Cumulative Probability (P(χ² ≤ $chi)): ${String.format("%.6f", cdfValue)}
-            Probability Density: ${String.format("%.6f", pdfValue)}
-            P-value (P(χ² > $chi)): ${String.format("%.6f", pValue)}
-        """.trimIndent()
-
-        currentGraphData = GraphDrawer.generateGraphData(
-            DistributionType.CHISQUARE,
-            mapOf("chi" to chi, "df" to df),
-            chi
+        val graphData = GraphDrawer.generateGraphData(
+            DistributionType.CHISQUARE, mapOf("chi" to chiObs, "df" to df), chiObs
         )
-
-        displayResults(resultText)
+        return CalcResult(text, graphData)
     }
 
-    private fun calculateF() {
-        val f = zScoreInput.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Invalid F-value")
-        val df1 = df1Input.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Invalid df1")
-        val df2 = df2Input.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Invalid df2")
+    // ── F distribution ────────────────────────────────────────────────────────
 
-        if (f < 0 || df1 <= 0 || df2 <= 0) {
-            throw IllegalArgumentException("Invalid parameters")
+    private fun calcF(): CalcResult {
+        val df1   = df1Input.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("df₁ is required.")
+        val df2   = df2Input.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("df₂ is required.")
+        val fObs  = fValueInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Observed F-value is required.")
+        val alpha = fAlphaInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Significance level α is required.")
+        if (df1 <= 0 || df2 <= 0) throw IllegalArgumentException("df₁ and df₂ must be > 0.")
+        if (fObs < 0)             throw IllegalArgumentException("F-value must be ≥ 0.")
+        if (alpha !in 0.0..1.0)  throw IllegalArgumentException("α must be between 0 and 1.")
+
+        val cdf      = FDistribution.cdf(fObs, df1, df2)
+        val pValue   = 1.0 - cdf
+        val critical = FDistribution.inverseCDF(1.0 - alpha, df1, df2)
+        val reject   = fObs > critical
+
+        val text = buildString {
+            appendLine("── Inputs ──────────────────────")
+            appendLine("  df₁ = ${df1.toInt()},  df₂ = ${df2.toInt()}")
+            appendLine("  F = $fObs,  α = $alpha")
+            appendLine()
+            appendLine("── Probabilities ───────────────")
+            appendLine("  P(F ≤ $fObs) = ${fmt(cdf)}")
+            appendLine("  P(F > $fObs) = ${fmt(pValue)}   (p-value)")
+            appendLine()
+            appendLine("── Critical Value ───────────────")
+            appendLine("  F* (α=$alpha, df₁=${df1.toInt()}, df₂=${df2.toInt()}) = ${fmt(critical)}")
+            appendLine()
+            appendLine("── Decision (α = $alpha) ────────")
+            appendLine("  ${if (reject) "REJECT H₀  (F > F*)" else "Fail to reject H₀"}")
         }
 
-        val cdfValue = FDistribution.cdf(f, df1, df2)
-        val pdfValue = FDistribution.pdf(f, df1, df2)
-        val pValue = 1.0 - cdfValue
-
-        val resultText = """
-            F-value: $f
-            Degrees of Freedom 1: $df1
-            Degrees of Freedom 2: $df2
-            
-            Cumulative Probability (P(F ≤ $f)): ${String.format("%.6f", cdfValue)}
-            Probability Density: ${String.format("%.6f", pdfValue)}
-            P-value (P(F > $f)): ${String.format("%.6f", pValue)}
-        """.trimIndent()
-
-        currentGraphData = GraphDrawer.generateGraphData(
-            DistributionType.F,
-            mapOf("f" to f, "df1" to df1, "df2" to df2),
-            f
+        val graphData = GraphDrawer.generateGraphData(
+            DistributionType.F, mapOf("f" to fObs, "df1" to df1, "df2" to df2), fObs
         )
-
-        displayResults(resultText)
+        return CalcResult(text, graphData)
     }
 
-    private fun displayResults(resultText: String) {
-        this.resultText.text = resultText
-        resultsCard.visibility = View.VISIBLE
-    }
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private fun fmt(v: Double) = String.format("%.6f", v)
+
+    private data class CalcResult(val text: String, val graphData: GraphData?)
+
+    // ── Graph ─────────────────────────────────────────────────────────────────
 
     private fun drawGraph(graphData: GraphData?) {
-        if (graphData == null) {
-            graphCard.visibility = View.GONE
-            return
-        }
-
+        if (graphData == null) { graphCard.visibility = View.GONE; return }
         graphCard.visibility = View.VISIBLE
 
-        // Create entries
         val entries = graphData.xValues.zip(graphData.yValues).map { (x, y) ->
             Entry(x.toFloat(), y.toFloat())
         }
 
-        // Create dataset
-        val dataSet = LineDataSet(entries, "Distribution").apply {
-            color = getColorForDistribution(selectedDistribution)
+        val color = when (selectedDistribution) {
+            DistributionType.NORMAL    -> R.color.normal_color
+            DistributionType.T         -> R.color.t_color
+            DistributionType.CHISQUARE -> R.color.chisquare_color
+            DistributionType.F         -> R.color.f_color
+        }.let { resources.getColor(it, null) }
+
+        val dataSet = LineDataSet(entries, selectedDistribution.displayName).apply {
+            this.color = color
             setDrawCircles(false)
             lineWidth = 2f
             mode = LineDataSet.Mode.CUBIC_BEZIER
+            setDrawFilled(true)
+            fillAlpha = 40
+            fillColor = color
         }
 
-        // Create line data
-        val lineData = LineData(dataSet)
-        distributionChart.data = lineData
-
-        // Configure chart
         distributionChart.apply {
+            data = LineData(dataSet)
             description.isEnabled = false
             setTouchEnabled(true)
             isDragEnabled = true
             setScaleEnabled(true)
             setPinchZoom(true)
             setDrawGridBackground(false)
-
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
                 setDrawGridLines(false)
                 valueFormatter = object : ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String {
-                        return String.format("%.2f", value)
-                    }
+                    override fun getFormattedValue(value: Float) =
+                        String.format("%.2f", value)
                 }
             }
-
-            axisLeft.apply {
-                setDrawGridLines(true)
-                axisMinimum = 0f
-            }
-
+            axisLeft.apply { setDrawGridLines(true); axisMinimum = 0f }
             axisRight.isEnabled = false
             legend.isEnabled = true
-
             invalidate()
         }
-    }
-
-    private fun getColorForDistribution(distribution: DistributionType): Int {
-        return when (distribution) {
-            DistributionType.NORMAL -> R.color.normal_color
-            DistributionType.T -> R.color.t_color
-            DistributionType.CHISQUARE -> R.color.chisquare_color
-            DistributionType.F -> R.color.f_color
-        }.let { resources.getColor(it, null) }
     }
 }

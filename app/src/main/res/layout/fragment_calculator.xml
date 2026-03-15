@@ -17,13 +17,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Statistical Calculator"
-            android:textSize="24sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="@color/primary_dark"
             android:gravity="center"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="16dp" />
 
-        <!-- Distribution Selection -->
+        <!-- Distribution Selection Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Select Distribution"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:layout_marginBottom="8dp" />
@@ -56,7 +56,7 @@
                         android:id="@+id/radio_normal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/distribution_normal"
+                        android:text="Normal (Z)"
                         android:textSize="14sp"
                         android:checked="true" />
 
@@ -64,32 +64,37 @@
                         android:id="@+id/radio_t"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/distribution_t"
+                        android:text="Student's t"
                         android:textSize="14sp" />
 
                     <RadioButton
                         android:id="@+id/radio_chisquare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/distribution_chisquare"
+                        android:text="Chi-square (χ²)"
                         android:textSize="14sp" />
 
                     <RadioButton
                         android:id="@+id/radio_f"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/distribution_f"
+                        android:text="F Distribution"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/radio_lognormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Log-Normal"
                         android:textSize="14sp" />
 
                 </RadioGroup>
 
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Input Parameters Card -->
+        <!-- Parameters Card -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/parameters_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -104,87 +109,41 @@
                 android:padding="16dp">
 
                 <TextView
+                    android:id="@+id/params_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Enter Parameters"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
+                    android:layout_marginBottom="4dp" />
+
+                <!-- Hint text explaining what parameters are needed -->
+                <TextView
+                    android:id="@+id/params_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enter a Z-score to find its cumulative probability."
+                    android:textSize="12sp"
+                    android:textColor="@color/text_hint"
                     android:layout_marginBottom="12dp" />
 
-                <!-- Z-Score Input -->
+                <!-- ── NORMAL: z-score, mean, std dev ── -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/z_score_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     style="@style/InputStyle"
-                    app:boxStrokeColor="@color/primary"
-                    android:hint="@string/z_score">
+                    android:hint="Z-Score (x)">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/z_score_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal|numberSigned" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Degrees of Freedom Input -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/df_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/InputStyle"
-                    android:hint="@string/degrees_of_freedom"
-                    android:visibility="gone">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/df_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- DF1 Input (for F-distribution) -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/df1_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/InputStyle"
-                    android:hint="@string/df1"
-                    android:visibility="gone">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/df1_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- DF2 Input (for F-distribution) -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/df2_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/InputStyle"
-                    android:hint="@string/df2"
-                    android:visibility="gone">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/df2_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Mean Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/mean_layout"
                     android:layout_width="match_parent"
@@ -200,10 +159,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal|numberSigned"
                         android:text="0" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Standard Deviation Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/std_dev_layout"
                     android:layout_width="match_parent"
@@ -219,11 +176,177 @@
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:text="1" />
+                </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- ── T / CHI-SQUARE: degrees of freedom + significance level ── -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/df_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="Degrees of Freedom (df)"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/df_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- t-value / chi-square value (reused field, label set in code) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/test_stat_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="t-value"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/test_stat_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal|numberSigned" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/alpha_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="Significance Level (α), e.g. 0.05"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/alpha_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:text="0.05" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- ── F: df1, df2, significance level, F-value ── -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/df1_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="Numerator Degrees of Freedom (df₁)"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/df1_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/df2_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="Denominator Degrees of Freedom (df₂)"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/df2_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/f_value_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="F-value (observed statistic)"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/f_value_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/f_alpha_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="Significance Level (α), e.g. 0.05"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/f_alpha_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:text="0.05" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- ── LOG-NORMAL: x, meanLog (μ), sdLog (σ) ── -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ln_x_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="Value (x > 0)"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ln_x_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ln_mean_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="Mean of ln(X)  —  μ"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ln_mean_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal|numberSigned"
+                        android:text="0" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ln_sd_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="Std Dev of ln(X)  —  σ"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ln_sd_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:text="1" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Calculate Button -->
@@ -231,7 +354,7 @@
             android:id="@+id/calculate_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/calculate"
+            android:text="Calculate"
             style="@style/PrimaryButton"
             android:layout_marginBottom="16dp" />
 
@@ -255,22 +378,21 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/result"
-                    android:textSize="16sp"
+                    android:text="Results"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginBottom="10dp" />
 
                 <TextView
                     android:id="@+id/result_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textColor="@color/text_secondary"
-                    android:lineSpacingExtra="4dp" />
-
+                    android:lineSpacingExtra="4dp"
+                    android:fontFamily="monospace" />
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Graph Card -->
@@ -293,8 +415,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/graph"
-                    android:textSize="16sp"
+                    android:text="Distribution Graph"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:layout_marginBottom="12dp" />
@@ -302,12 +424,9 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/distribution_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp" />
-
+                    android:layout_height="280dp" />
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-
 </ScrollView>

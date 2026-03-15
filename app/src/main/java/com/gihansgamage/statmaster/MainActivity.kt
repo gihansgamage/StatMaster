@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.gihansgamage.statmaster.ui.fragments.CalculatorFragment
 import com.gihansgamage.statmaster.ui.fragments.FormulasFragment
+import com.gihansgamage.statmaster.ui.fragments.LogFragment
 import com.gihansgamage.statmaster.ui.fragments.TableFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -17,22 +18,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         initViews()
         setupBottomNavigation()
-
-        if (savedInstanceState == null) {
-            loadFragment(CalculatorFragment())
-        }
+        if (savedInstanceState == null) loadFragment(CalculatorFragment())
     }
 
     private fun initViews() {
         bottomNavigation = findViewById(R.id.bottom_navigation)
-
-        // Wire up the info button directly — no ActionBar/menu needed
-        findViewById<ImageButton>(R.id.btn_info).setOnClickListener {
-            showAppInfoDialog()
-        }
+        findViewById<ImageButton>(R.id.btn_info).setOnClickListener { showAppInfoDialog() }
     }
 
     private fun setupBottomNavigation() {
@@ -40,6 +33,7 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_calculator -> { loadFragment(CalculatorFragment()); true }
                 R.id.nav_tables     -> { loadFragment(TableFragment());      true }
+                R.id.nav_log        -> { loadFragment(LogFragment());        true }
                 R.id.nav_formulas   -> { loadFragment(FormulasFragment());   true }
                 else -> false
             }
@@ -54,11 +48,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showAppInfoDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_app_info, null)
-
         AlertDialog.Builder(this, R.style.AppInfoDialog)
             .setView(dialogView)
             .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-            .create()
-            .show()
+            .create().show()
     }
 }
