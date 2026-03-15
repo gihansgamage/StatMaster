@@ -22,14 +22,17 @@
             android:gravity="center"
             android:layout_marginBottom="24dp" />
 
-        <!-- Normal Distribution Formula -->
+        <!-- ═══════════════════════════════════════════════
+             NORMAL DISTRIBUTION
+             ═══════════════════════════════════════════════ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
-            app:strokeWidth="0dp">
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/normal_color">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -40,75 +43,97 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Normal Distribution (Z)"
+                    android:text="Normal Distribution  Z"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/normal_color"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="12dp" />
 
+                <!-- PDF -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Probability Density Function (PDF):"
-                    android:textSize="14sp"
+                    android:text="Probability Density Function (PDF)"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="6dp" />
 
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="         1\nf(x) = ——————— · e^(−(x−μ)²  /  2σ²)\n       σ√(2π)" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Z-score -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="f(x) = (1 / (σ√(2π))) × e^(-(x-μ)² / (2σ²))"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Z-Score Formula:"
-                    android:textSize="14sp"
+                    android:text="Z-Score"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="    X − μ\nZ = —————\n      σ" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Z = (X - μ) / σ"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Used For: Probability calculations, hypothesis testing, confidence intervals"
+                    android:text="μ = mean    σ = standard deviation    X = observed value"
                     android:textSize="12sp"
                     android:textColor="@color/text_hint"
                     android:layout_marginBottom="4dp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Where: μ = mean, σ = standard deviation, X = value"
+                    android:text="Used for: Probability, hypothesis testing, confidence intervals"
                     android:textSize="12sp"
                     android:textColor="@color/text_hint" />
 
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- t-Distribution Formula -->
+        <!-- ═══════════════════════════════════════════════
+             STUDENT'S t DISTRIBUTION
+             ═══════════════════════════════════════════════ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
-            app:strokeWidth="0dp">
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/t_color">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -123,71 +148,93 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/t_color"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="12dp" />
 
+                <!-- PDF -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Probability Density Function (PDF):"
-                    android:textSize="14sp"
+                    android:text="Probability Density Function (PDF)"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="6dp" />
 
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="       Γ((ν+1)/2)            t²  −(ν+1)/2\nf(t) = ————————————— · (1 + ——)\n       √(νπ) · Γ(ν/2)        ν" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- t-statistic -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="f(t) = Γ((df+1)/2) / (√(df×π) × Γ(df/2)) × (1 + t²/df)^(-(df+1)/2)"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="t-Statistic Formula:"
-                    android:textSize="14sp"
+                    android:text="t-Statistic (one-sample)"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="    x̄ − μ\nt = ————————\n    s / √n" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="t = (x̄ - μ) / (s / √n)"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Used For: Small sample tests, confidence intervals when σ is unknown"
+                    android:text="ν = df (degrees of freedom)    Γ = gamma function\nx̄ = sample mean    s = sample std dev    n = sample size"
                     android:textSize="12sp"
                     android:textColor="@color/text_hint"
                     android:layout_marginBottom="4dp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Where: df = degrees of freedom, Γ = gamma function, x̄ = sample mean, s = sample std dev, n = sample size"
+                    android:text="Used for: Small sample tests, confidence intervals when σ unknown"
                     android:textSize="12sp"
                     android:textColor="@color/text_hint" />
 
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Chi-Square Distribution Formula -->
+        <!-- ═══════════════════════════════════════════════
+             CHI-SQUARE DISTRIBUTION
+             ═══════════════════════════════════════════════ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
-            app:strokeWidth="0dp">
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/chisquare_color">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -198,75 +245,97 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chi-Square Distribution (χ²)"
+                    android:text="Chi-Square Distribution  χ²"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/chisquare_color"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="12dp" />
 
+                <!-- PDF -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Probability Density Function (PDF):"
-                    android:textSize="14sp"
+                    android:text="Probability Density Function (PDF)"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="6dp" />
 
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="             x^(k/2−1) · e^(−x/2)\nf(x) = ————————————————————————————\n          2^(k/2) · Γ(k/2)" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- χ² statistic -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="f(x) = (1 / (2^(df/2) × Γ(df/2))) × x^(df/2-1) × e^(-x/2)"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Chi-Square Statistic Formula:"
-                    android:textSize="14sp"
+                    android:text="Chi-Square Statistic"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="       Σ (Oᵢ − Eᵢ)²\nχ² =  ———————————————\n            Eᵢ" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="χ² = Σ((Oᵢ - Eᵢ)² / Eᵢ)"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Used For: Goodness of fit tests, tests of independence, variance tests"
+                    android:text="k = df    Γ = gamma function    Oᵢ = observed    Eᵢ = expected"
                     android:textSize="12sp"
                     android:textColor="@color/text_hint"
                     android:layout_marginBottom="4dp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Where: df = degrees of freedom, Oᵢ = observed frequency, Eᵢ = expected frequency"
+                    android:text="Used for: Goodness-of-fit, tests of independence, variance tests"
                     android:textSize="12sp"
                     android:textColor="@color/text_hint" />
 
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- F-Distribution Formula -->
+        <!-- ═══════════════════════════════════════════════
+             F DISTRIBUTION
+             ═══════════════════════════════════════════════ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
-            app:strokeWidth="0dp">
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/f_color">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -281,63 +350,202 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/f_color"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="12dp" />
 
+                <!-- PDF -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Probability Density Function (PDF):"
-                    android:textSize="14sp"
+                    android:text="Probability Density Function (PDF)"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="6dp" />
 
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="       √( (d₁x)^d₁ · d₂^d₂ / (d₁x+d₂)^(d₁+d₂) )\nf(x) = ————————————————————————————————————————\n                    x · B(d₁/2, d₂/2)" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- F statistic -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="f(x) = √((df1×x)^(df1) × df2^df2 / (df1×x + df2)^(df1+df2)) / (x × B(df1/2, df2/2))"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="F-Statistic Formula:"
-                    android:textSize="14sp"
+                    android:text="F-Statistic"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="      s₁²\nF =  ————\n      s₂²" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="F = s1² / s2²"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Used For: ANOVA, comparing variances of two populations"
+                    android:text="d₁ = df₁ (numerator)    d₂ = df₂ (denominator)    B = beta function\ns₁², s₂² = sample variances"
                     android:textSize="12sp"
                     android:textColor="@color/text_hint"
                     android:layout_marginBottom="4dp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Where: df1, df2 = degrees of freedom, B = beta function, s1², s2² = sample variances"
+                    android:text="Used for: ANOVA, comparing variances of two populations"
                     android:textSize="12sp"
                     android:textColor="@color/text_hint" />
 
             </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
+        <!-- ═══════════════════════════════════════════════
+             LOGARITHM
+             ═══════════════════════════════════════════════ -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/primary">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Logarithm"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Definition -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Definition"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="logb(x) = y   ↔   b^y = x" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Change of base -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change-of-Base"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="          ln(x)       log₁₀(x)\nlogb(x) = ——————— = ———————————\n          ln(b)       log₁₀(b)" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Key identities -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Key Identities"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/background">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:fontFamily="monospace"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="log(xy)  =  log(x) + log(y)\nlog(x/y) =  log(x) − log(y)\nlog(xⁿ)  =  n · log(x)\nlog(1)   =  0\nlog(b)   =  1    (same base)" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="b = base (b > 0, b ≠ 1)    x > 0"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_hint" />
+
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-
 </ScrollView>

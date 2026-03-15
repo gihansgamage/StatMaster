@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.gihansgamage.statmaster.ui.fragments.CalculatorFragment
 import com.gihansgamage.statmaster.ui.fragments.FormulasFragment
-import com.gihansgamage.statmaster.ui.fragments.LogFragment
 import com.gihansgamage.statmaster.ui.fragments.TableFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -33,7 +32,6 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_calculator -> { loadFragment(CalculatorFragment()); true }
                 R.id.nav_tables     -> { loadFragment(TableFragment());      true }
-                R.id.nav_log        -> { loadFragment(LogFragment());        true }
                 R.id.nav_formulas   -> { loadFragment(FormulasFragment());   true }
                 else -> false
             }

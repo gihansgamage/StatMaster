@@ -1,6 +1,8 @@
 package com.gihansgamage.statmaster.utils
 
 import com.gihansgamage.statmaster.models.DistributionType
+import kotlin.math.log10
+import kotlin.math.ln
 
 object DistributionTableGenerator {
 
@@ -30,7 +32,12 @@ object DistributionTableGenerator {
         val dfs = (1..30).toList() + listOf(40, 60, 120)
         for (df in dfs) {
             val row = mutableListOf(df.toString())
-            for (alpha in alphas) row.add(String.format("%.4f", TDistribution.inverseCDF(1.0 - alpha, df.toDouble())))
+            for (alpha in alphas) {
+                val value = try {
+                    TDistribution.inverseCDF(1.0 - alpha, df.toDouble())
+                } catch (e: Exception) { Double.NaN }
+                row.add(if (value.isNaN() || value.isInfinite()) "—" else String.format("%.4f", value))
+            }
             table.add(row)
         }
         val infRow = mutableListOf("∞")
@@ -41,14 +48,24 @@ object DistributionTableGenerator {
 
     fun generateChiSquareTable(): List<List<String>> {
         val table = mutableListOf<List<String>>()
+        // alpha = upper-tail probability (area to the right)
         val alphas = listOf(0.995, 0.99, 0.975, 0.95, 0.90, 0.10, 0.05, 0.025, 0.01, 0.005)
         val header = mutableListOf("df")
         for (a in alphas) header.add("α=${String.format("%.3f", a)}")
         table.add(header)
+
         val dfs = (1..30).toList() + listOf(40, 50, 60, 80, 100)
         for (df in dfs) {
             val row = mutableListOf(df.toString())
-            for (alpha in alphas) row.add(String.format("%.3f", ChiSquareDistribution.inverseCDF(1.0 - alpha, df.toDouble())))
+            for (alpha in alphas) {
+                // inverseCDF takes cumulative probability = 1 - upper-tail alpha
+                val p = 1.0 - alpha
+                val value = try {
+                    val v = ChiSquareDistribution.inverseCDF(p, df.toDouble())
+                    if (v.isNaN() || v.isInfinite() || v < 0) null else v
+                } catch (e: Exception) { null }
+                row.add(if (value == null) "—" else String.format("%.3f", value))
+            }
             table.add(row)
         }
         return table
@@ -64,7 +81,51 @@ object DistributionTableGenerator {
         table.add(header)
         for (df2 in df2Values) {
             val row = mutableListOf(df2.toString())
-            for (df1 in df1Values) row.add(String.format("%.3f", FDistribution.inverseCDF(0.95, df1.toDouble(), df2.toDouble())))
+            for (df1 in df1Values) {
+                val value = try {
+                    val v = FDistribution.inverseCDF(0.95, df1.toDouble(), df2.toDouble())
+                    if (v.isNaN() || v.isInfinite() || v < 0) null else v
+                } catch (e: Exception) { null }
+                row.add(if (value == null) "—" else String.format("%.3f", value))
+            }
+            table.add(row)
+        }
+        return table
+    }
+
+    // ── Log tables ────────────────────────────────────────────────────────────
+
+    fun generateLog10Table(): List<List<String>> {
+        val table = mutableListOf<List<String>>()
+        val header = mutableListOf("x")
+        for (j in 0..9) header.add("+0.0$j")
+        table.add(header)
+        for (iTen in 10..99) {
+            val row = mutableListOf<String>()
+            val xBase = iTen / 10.0
+            row.add(String.format("%.1f", xBase))
+            for (j in 0..9) {
+                val x = xBase + j / 100.0
+                row.add(String.format("%.4f", log10(x)))
+            }
+            table.add(row)
+        }
+        return table
+    }
+
+    fun generateLnTable(): List<List<String>> {
+        val table = mutableListOf<List<String>>()
+        val header = mutableListOf("x")
+        for (j in 0..9) header.add("+0.0$j")
+        table.add(header)
+        for (iTen in 10..99) {
+            val row = mutableListOf<String>()
+            val xBase = iTen / 10.0
+            row.add(String.format("%.1f", xBase))
+            for (j in 0..9) {
+                val x = xBase + j / 100.0
+                row.add(String.format("%.4f", ln(x)))
+            }
             table.add(row)
         }
         return table

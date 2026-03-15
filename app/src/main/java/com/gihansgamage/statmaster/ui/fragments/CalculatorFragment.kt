@@ -34,23 +34,25 @@ class CalculatorFragment : Fragment() {
     private lateinit var graphCard: MaterialCardView
     private lateinit var distributionChart: LineChart
 
-    // Normal
+    // Normal — Z value only
     private lateinit var zScoreLayout: TextInputLayout
     private lateinit var zScoreInput: TextInputEditText
-    private lateinit var meanLayout: TextInputLayout
-    private lateinit var meanInput: TextInputEditText
-    private lateinit var stdDevLayout: TextInputLayout
-    private lateinit var stdDevInput: TextInputEditText
 
-    // t / chi-square shared
+    // t — df + α
     private lateinit var dfLayout: TextInputLayout
     private lateinit var dfInput: TextInputEditText
-    private lateinit var testStatLayout: TextInputLayout
-    private lateinit var testStatInput: TextInputEditText
     private lateinit var alphaLayout: TextInputLayout
     private lateinit var alphaInput: TextInputEditText
 
-    // F
+    // χ² — df + α   (reuses dfLayout/dfInput/alphaLayout/alphaInput + chiValueLayout)
+    private lateinit var chiValueLayout: TextInputLayout
+    private lateinit var chiValueInput: TextInputEditText
+
+    // t observed stat (shared for t & chi)
+    private lateinit var testStatLayout: TextInputLayout
+    private lateinit var testStatInput: TextInputEditText
+
+    // F — df1 + df2 + α
     private lateinit var df1Layout: TextInputLayout
     private lateinit var df1Input: TextInputEditText
     private lateinit var df2Layout: TextInputLayout
@@ -60,12 +62,21 @@ class CalculatorFragment : Fragment() {
     private lateinit var fAlphaLayout: TextInputLayout
     private lateinit var fAlphaInput: TextInputEditText
 
-    private var selectedDistribution = DistributionType.NORMAL
+    // Log — base + value
+    private lateinit var logBaseLayout: TextInputLayout
+    private lateinit var logBaseInput: TextInputEditText
+    private lateinit var logValueLayout: TextInputLayout
+    private lateinit var logValueInput: TextInputEditText
+
+    private enum class Mode { NORMAL, T, CHISQUARE, F, LOG }
+    private var mode = Mode.NORMAL
 
     private val allLayouts get() = listOf(
-        zScoreLayout, meanLayout, stdDevLayout,
+        zScoreLayout,
         dfLayout, testStatLayout, alphaLayout,
-        df1Layout, df2Layout, fValueLayout, fAlphaLayout
+        chiValueLayout,
+        df1Layout, df2Layout, fValueLayout, fAlphaLayout,
+        logBaseLayout, logValueLayout
     )
 
     override fun onCreateView(
@@ -90,10 +101,6 @@ class CalculatorFragment : Fragment() {
 
         zScoreLayout  = view.findViewById(R.id.z_score_layout)
         zScoreInput   = view.findViewById(R.id.z_score_input)
-        meanLayout    = view.findViewById(R.id.mean_layout)
-        meanInput     = view.findViewById(R.id.mean_input)
-        stdDevLayout  = view.findViewById(R.id.std_dev_layout)
-        stdDevInput   = view.findViewById(R.id.std_dev_input)
 
         dfLayout       = view.findViewById(R.id.df_layout)
         dfInput        = view.findViewById(R.id.df_input)
@@ -101,6 +108,9 @@ class CalculatorFragment : Fragment() {
         testStatInput  = view.findViewById(R.id.test_stat_input)
         alphaLayout    = view.findViewById(R.id.alpha_layout)
         alphaInput     = view.findViewById(R.id.alpha_input)
+
+        chiValueLayout = view.findViewById(R.id.chi_value_layout)
+        chiValueInput  = view.findViewById(R.id.chi_value_input)
 
         df1Layout    = view.findViewById(R.id.df1_layout)
         df1Input     = view.findViewById(R.id.df1_input)
@@ -110,16 +120,22 @@ class CalculatorFragment : Fragment() {
         fValueInput  = view.findViewById(R.id.f_value_input)
         fAlphaLayout = view.findViewById(R.id.f_alpha_layout)
         fAlphaInput  = view.findViewById(R.id.f_alpha_input)
+
+        logBaseLayout  = view.findViewById(R.id.log_base_layout)
+        logBaseInput   = view.findViewById(R.id.log_base_input)
+        logValueLayout = view.findViewById(R.id.log_value_layout)
+        logValueInput  = view.findViewById(R.id.log_value_input)
     }
 
     private fun setupListeners() {
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            selectedDistribution = when (checkedId) {
-                R.id.radio_normal    -> DistributionType.NORMAL
-                R.id.radio_t         -> DistributionType.T
-                R.id.radio_chisquare -> DistributionType.CHISQUARE
-                R.id.radio_f         -> DistributionType.F
-                else                 -> DistributionType.NORMAL
+            mode = when (checkedId) {
+                R.id.radio_normal    -> Mode.NORMAL
+                R.id.radio_t         -> Mode.T
+                R.id.radio_chisquare -> Mode.CHISQUARE
+                R.id.radio_f         -> Mode.F
+                R.id.radio_log       -> Mode.LOG
+                else                 -> Mode.NORMAL
             }
             updateInputFields()
         }
@@ -133,25 +149,27 @@ class CalculatorFragment : Fragment() {
         resultsCard.visibility = View.GONE
         graphCard.visibility   = View.GONE
 
-        when (selectedDistribution) {
-            DistributionType.NORMAL -> {
-                paramsHint.text = "Enter a Z-score (or any x value with μ and σ) to find cumulative probability."
-                zScoreLayout.hint = "Z-Score (or x value)"
-                show(zScoreLayout, meanLayout, stdDevLayout)
+        when (mode) {
+            Mode.NORMAL -> {
+                paramsHint.text = "Enter a Z-score to find cumulative probability."
+                zScoreLayout.hint = "Z-Score"
+                show(zScoreLayout)
             }
-            DistributionType.T -> {
-                paramsHint.text = "Enter df, the observed t-value, and α to get the critical value and decision."
-                testStatLayout.hint = "Observed t-value"
-                show(dfLayout, testStatLayout, alphaLayout)
+            Mode.T -> {
+                paramsHint.text = "Enter df and α to get the critical value and decision."
+                show(dfLayout, alphaLayout)
             }
-            DistributionType.CHISQUARE -> {
-                paramsHint.text = "Enter df, the observed χ² value, and α to get the critical value and decision."
-                testStatLayout.hint = "Observed χ² value"
-                show(dfLayout, testStatLayout, alphaLayout)
+            Mode.CHISQUARE -> {
+                paramsHint.text = "Enter df and α to get the critical χ² value."
+                show(dfLayout, alphaLayout)
             }
-            DistributionType.F -> {
-                paramsHint.text = "Enter df₁ (numerator), df₂ (denominator), the observed F-value, and α."
-                show(df1Layout, df2Layout, fValueLayout, fAlphaLayout)
+            Mode.F -> {
+                paramsHint.text = "Enter df₁, df₂ and α to get the critical F value."
+                show(df1Layout, df2Layout, fAlphaLayout)
+            }
+            Mode.LOG -> {
+                paramsHint.text = "Enter base and value to compute logBase(value). E.g. base=3, value=25 → log₃(25)."
+                show(logBaseLayout, logValueLayout)
             }
         }
     }
@@ -163,15 +181,16 @@ class CalculatorFragment : Fragment() {
 
     private fun performCalculation() {
         try {
-            val result = when (selectedDistribution) {
-                DistributionType.NORMAL    -> calcNormal()
-                DistributionType.T         -> calcT()
-                DistributionType.CHISQUARE -> calcChiSquare()
-                DistributionType.F         -> calcF()
+            val result = when (mode) {
+                Mode.NORMAL    -> calcNormal()
+                Mode.T         -> calcT()
+                Mode.CHISQUARE -> calcChiSquare()
+                Mode.F         -> calcF()
+                Mode.LOG       -> calcLog()
             }
             resultText.text = result.text
             resultsCard.visibility = View.VISIBLE
-            drawGraph(result.graphData)
+            if (mode != Mode.LOG) drawGraph(result.graphData) else { graphCard.visibility = View.GONE }
         } catch (e: IllegalArgumentException) {
             Toast.makeText(requireContext(), e.message ?: "Invalid input", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
@@ -182,35 +201,30 @@ class CalculatorFragment : Fragment() {
     // ── Normal ────────────────────────────────────────────────────────────────
 
     private fun calcNormal(): CalcResult {
-        val x      = zScoreInput.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Z-score / x value is required.")
-        val mean   = meanInput.text.toString().toDoubleOrNull() ?: 0.0
-        val stdDev = stdDevInput.text.toString().toDoubleOrNull() ?: 1.0
-        if (stdDev <= 0) throw IllegalArgumentException("Standard deviation must be > 0.")
+        val z = zScoreInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Z-score is required.")
 
-        val z       = (x - mean) / stdDev
         val cdf     = NormalDistribution.cdf(z)
-        val pdf     = NormalDistribution.pdf(x, mean, stdDev)
+        val pdf     = NormalDistribution.pdf(z)
         val upper   = 1.0 - cdf
         val twoTail = NormalDistribution.twoTailedProbability(z)
 
         val text = buildString {
-            appendLine("── Inputs ──────────────────────")
-            appendLine("  x = $x,  μ = $mean,  σ = $stdDev")
-            appendLine("  Z-score = ${fmt(z)}")
+            appendLine("── Input ────────────────────────")
+            appendLine("  Z = $z")
             appendLine()
             appendLine("── Probabilities ───────────────")
-            appendLine("  P(X ≤ $x)  =  ${fmt(cdf)}")
-            appendLine("  P(X > $x)  =  ${fmt(upper)}")
+            appendLine("  P(Z ≤ ${fmt(z)})  =  ${fmt(cdf)}")
+            appendLine("  P(Z > ${fmt(z)})  =  ${fmt(upper)}")
             appendLine("  P(|Z| > ${fmt(kotlin.math.abs(z))}) = ${fmt(twoTail)}  (two-tail)")
             appendLine()
             appendLine("── Density ─────────────────────")
-            appendLine("  f($x) = ${fmt(pdf)}")
+            appendLine("  f(${fmt(z)}) = ${fmt(pdf)}")
         }
 
         val graphData = GraphDrawer.generateGraphData(
             DistributionType.NORMAL,
-            mapOf("z" to z, "mean" to mean, "stdDev" to stdDev),
+            mapOf("z" to z, "mean" to 0.0, "stdDev" to 1.0),
             z
         )
         return CalcResult(text, graphData)
@@ -221,41 +235,29 @@ class CalculatorFragment : Fragment() {
     private fun calcT(): CalcResult {
         val df    = dfInput.text.toString().toDoubleOrNull()
             ?: throw IllegalArgumentException("Degrees of freedom (df) is required.")
-        val tObs  = testStatInput.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Observed t-value is required.")
         val alpha = alphaInput.text.toString().toDoubleOrNull()
             ?: throw IllegalArgumentException("Significance level α is required.")
         if (df <= 0)             throw IllegalArgumentException("df must be > 0.")
         if (alpha !in 0.0..1.0) throw IllegalArgumentException("α must be between 0 and 1.")
 
-        val cdf              = TDistribution.cdf(tObs, df)
-        val upperP           = 1.0 - cdf
-        val twoTailP         = 2.0 * minOf(cdf, upperP)
         val criticalOneTail  = TDistribution.inverseCDF(1.0 - alpha, df)
         val criticalTwoTail  = TDistribution.inverseCDF(1.0 - alpha / 2.0, df)
-        val rejectOneTail    = tObs > criticalOneTail
-        val rejectTwoTail    = kotlin.math.abs(tObs) > criticalTwoTail
 
         val text = buildString {
             appendLine("── Inputs ──────────────────────")
-            appendLine("  df = ${df.toInt()},  t = $tObs,  α = $alpha")
-            appendLine()
-            appendLine("── Probabilities ───────────────")
-            appendLine("  P(T ≤ $tObs) = ${fmt(cdf)}")
-            appendLine("  P(T > $tObs) = ${fmt(upperP)}   (one-tail p-value)")
-            appendLine("  Two-tail p-value = ${fmt(twoTailP)}")
+            appendLine("  df = ${df.toInt()},  α = $alpha")
             appendLine()
             appendLine("── Critical Values ─────────────")
             appendLine("  One-tail  t* (α=$alpha)   = ${fmt(criticalOneTail)}")
             appendLine("  Two-tail  t* (α/2=${alpha/2}) = ±${fmt(criticalTwoTail)}")
             appendLine()
-            appendLine("── Decision (α = $alpha) ────────")
-            appendLine("  One-tail: ${if (rejectOneTail) "REJECT H₀  (t > t*)" else "Fail to reject H₀"}")
-            appendLine("  Two-tail: ${if (rejectTwoTail) "REJECT H₀  (|t| > t*)" else "Fail to reject H₀"}")
+            appendLine("── Decision Rule ───────────────")
+            appendLine("  Reject H₀ (one-tail) if  t > ${fmt(criticalOneTail)}")
+            appendLine("  Reject H₀ (two-tail) if |t| > ${fmt(criticalTwoTail)}")
         }
 
         val graphData = GraphDrawer.generateGraphData(
-            DistributionType.T, mapOf("t" to tObs, "df" to df), tObs
+            DistributionType.T, mapOf("t" to criticalOneTail, "df" to df), criticalOneTail
         )
         return CalcResult(text, graphData)
     }
@@ -263,38 +265,28 @@ class CalculatorFragment : Fragment() {
     // ── Chi-square ────────────────────────────────────────────────────────────
 
     private fun calcChiSquare(): CalcResult {
-        val df     = dfInput.text.toString().toDoubleOrNull()
+        val df    = dfInput.text.toString().toDoubleOrNull()
             ?: throw IllegalArgumentException("Degrees of freedom (df) is required.")
-        val chiObs = testStatInput.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Observed χ² value is required.")
-        val alpha  = alphaInput.text.toString().toDoubleOrNull()
+        val alpha = alphaInput.text.toString().toDoubleOrNull()
             ?: throw IllegalArgumentException("Significance level α is required.")
         if (df <= 0)             throw IllegalArgumentException("df must be > 0.")
-        if (chiObs < 0)         throw IllegalArgumentException("χ² value must be ≥ 0.")
         if (alpha !in 0.0..1.0) throw IllegalArgumentException("α must be between 0 and 1.")
 
-        val cdf      = ChiSquareDistribution.cdf(chiObs, df)
-        val pValue   = 1.0 - cdf
         val critical = ChiSquareDistribution.inverseCDF(1.0 - alpha, df)
-        val reject   = chiObs > critical
 
         val text = buildString {
             appendLine("── Inputs ──────────────────────")
-            appendLine("  df = ${df.toInt()},  χ² = $chiObs,  α = $alpha")
-            appendLine()
-            appendLine("── Probabilities ───────────────")
-            appendLine("  P(χ² ≤ $chiObs) = ${fmt(cdf)}")
-            appendLine("  P(χ² > $chiObs) = ${fmt(pValue)}   (p-value)")
+            appendLine("  df = ${df.toInt()},  α = $alpha")
             appendLine()
             appendLine("── Critical Value ───────────────")
             appendLine("  χ²* (α=$alpha, df=${df.toInt()}) = ${fmt(critical)}")
             appendLine()
-            appendLine("── Decision (α = $alpha) ────────")
-            appendLine("  ${if (reject) "REJECT H₀  (χ² > χ²*)" else "Fail to reject H₀"}")
+            appendLine("── Decision Rule ───────────────")
+            appendLine("  Reject H₀ if  χ² > ${fmt(critical)}")
         }
 
         val graphData = GraphDrawer.generateGraphData(
-            DistributionType.CHISQUARE, mapOf("chi" to chiObs, "df" to df), chiObs
+            DistributionType.CHISQUARE, mapOf("chi" to critical, "df" to df), critical
         )
         return CalcResult(text, graphData)
     }
@@ -306,39 +298,69 @@ class CalculatorFragment : Fragment() {
             ?: throw IllegalArgumentException("df₁ is required.")
         val df2   = df2Input.text.toString().toDoubleOrNull()
             ?: throw IllegalArgumentException("df₂ is required.")
-        val fObs  = fValueInput.text.toString().toDoubleOrNull()
-            ?: throw IllegalArgumentException("Observed F-value is required.")
         val alpha = fAlphaInput.text.toString().toDoubleOrNull()
             ?: throw IllegalArgumentException("Significance level α is required.")
         if (df1 <= 0 || df2 <= 0) throw IllegalArgumentException("df₁ and df₂ must be > 0.")
-        if (fObs < 0)             throw IllegalArgumentException("F-value must be ≥ 0.")
-        if (alpha !in 0.0..1.0)  throw IllegalArgumentException("α must be between 0 and 1.")
+        if (alpha !in 0.0..1.0)   throw IllegalArgumentException("α must be between 0 and 1.")
 
-        val cdf      = FDistribution.cdf(fObs, df1, df2)
-        val pValue   = 1.0 - cdf
         val critical = FDistribution.inverseCDF(1.0 - alpha, df1, df2)
-        val reject   = fObs > critical
 
         val text = buildString {
             appendLine("── Inputs ──────────────────────")
-            appendLine("  df₁ = ${df1.toInt()},  df₂ = ${df2.toInt()}")
-            appendLine("  F = $fObs,  α = $alpha")
-            appendLine()
-            appendLine("── Probabilities ───────────────")
-            appendLine("  P(F ≤ $fObs) = ${fmt(cdf)}")
-            appendLine("  P(F > $fObs) = ${fmt(pValue)}   (p-value)")
+            appendLine("  df₁ = ${df1.toInt()},  df₂ = ${df2.toInt()},  α = $alpha")
             appendLine()
             appendLine("── Critical Value ───────────────")
             appendLine("  F* (α=$alpha, df₁=${df1.toInt()}, df₂=${df2.toInt()}) = ${fmt(critical)}")
             appendLine()
-            appendLine("── Decision (α = $alpha) ────────")
-            appendLine("  ${if (reject) "REJECT H₀  (F > F*)" else "Fail to reject H₀"}")
+            appendLine("── Decision Rule ───────────────")
+            appendLine("  Reject H₀ if  F > ${fmt(critical)}")
         }
 
         val graphData = GraphDrawer.generateGraphData(
-            DistributionType.F, mapOf("f" to fObs, "df1" to df1, "df2" to df2), fObs
+            DistributionType.F, mapOf("f" to critical, "df1" to df1, "df2" to df2), critical
         )
         return CalcResult(text, graphData)
+    }
+
+    // ── Log ───────────────────────────────────────────────────────────────────
+
+    private fun calcLog(): CalcResult {
+        val base  = logBaseInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Base is required.")
+        val value = logValueInput.text.toString().toDoubleOrNull()
+            ?: throw IllegalArgumentException("Value is required.")
+        if (base <= 0 || base == 1.0) throw IllegalArgumentException("Base must be > 0 and ≠ 1.")
+        if (value <= 0)               throw IllegalArgumentException("Value must be > 0.")
+
+        val result = LogarithmCalculator.logBase(value, base)
+
+        val text = buildString {
+            appendLine("── Input ────────────────────────")
+            appendLine("  base = $base,  value = $value")
+            appendLine()
+            appendLine("── Result ───────────────────────")
+            appendLine("  log${subscript(base)}($value) = ${fmt(result)}")
+            appendLine()
+            appendLine("── Verification ────────────────")
+            appendLine("  ${fmt(base)} ^ ${fmt(result)} = ${fmt(LogarithmCalculator.antilogBase(result, base))}")
+            appendLine()
+            appendLine("── Same value in common bases ──")
+            appendLine("  log₂($value)   = ${fmt(LogarithmCalculator.log2(value))}")
+            appendLine("  log₁₀($value)  = ${fmt(LogarithmCalculator.log10(value))}")
+            appendLine("  ln($value)     = ${fmt(LogarithmCalculator.ln(value))}")
+        }
+        return CalcResult(text, null)
+    }
+
+    private fun subscript(base: Double): String {
+        val s = if (base == base.toLong().toDouble()) base.toLong().toString() else base.toString()
+        return s.map { c ->
+            when (c) {
+                '0' -> '₀'; '1' -> '₁'; '2' -> '₂'; '3' -> '₃'; '4' -> '₄'
+                '5' -> '₅'; '6' -> '₆'; '7' -> '₇'; '8' -> '₈'; '9' -> '₉'
+                else -> c
+            }
+        }.joinToString("")
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -357,14 +379,22 @@ class CalculatorFragment : Fragment() {
             Entry(x.toFloat(), y.toFloat())
         }
 
-        val color = when (selectedDistribution) {
+        val distType = when (mode) {
+            Mode.NORMAL    -> DistributionType.NORMAL
+            Mode.T         -> DistributionType.T
+            Mode.CHISQUARE -> DistributionType.CHISQUARE
+            Mode.F         -> DistributionType.F
+            else           -> DistributionType.NORMAL
+        }
+
+        val color = when (distType) {
             DistributionType.NORMAL    -> R.color.normal_color
             DistributionType.T         -> R.color.t_color
             DistributionType.CHISQUARE -> R.color.chisquare_color
             DistributionType.F         -> R.color.f_color
         }.let { resources.getColor(it, null) }
 
-        val dataSet = LineDataSet(entries, selectedDistribution.displayName).apply {
+        val dataSet = LineDataSet(entries, distType.displayName).apply {
             this.color = color
             setDrawCircles(false)
             lineWidth = 2f
@@ -374,6 +404,7 @@ class CalculatorFragment : Fragment() {
             fillColor = color
         }
 
+        distributionChart.setBackgroundColor(resources.getColor(R.color.white, null))
         distributionChart.apply {
             data = LineData(dataSet)
             description.isEnabled = false

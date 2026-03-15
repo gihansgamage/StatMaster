@@ -6,7 +6,7 @@
     android:background="@color/background"
     android:orientation="vertical">
 
-    <!-- Distribution Selection -->
+    <!-- Chip row -->
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
                 android:id="@+id/chip_normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/distribution_normal"
+                android:text="Z (Normal)"
                 android:checked="true"
                 style="@style/Widget.MaterialComponents.Chip.Choice" />
 
@@ -32,40 +32,65 @@
                 android:id="@+id/chip_t"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/distribution_t"
+                android:text="t"
                 style="@style/Widget.MaterialComponents.Chip.Choice" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_chisquare"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/distribution_chisquare"
+                android:text="χ²"
                 style="@style/Widget.MaterialComponents.Chip.Choice" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_f"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/distribution_f"
+                android:text="F"
+                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_log10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="log₁₀"
+                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_ln"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ln"
                 style="@style/Widget.MaterialComponents.Chip.Choice" />
 
         </com.google.android.material.chip.ChipGroup>
-
     </HorizontalScrollView>
 
-    <!-- Table Info -->
+    <!-- Info bar -->
     <TextView
         android:id="@+id/table_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:textColor="@color/text_secondary"
         android:background="@color/primary_light"
         android:gravity="center" />
 
-    <!-- Table Container -->
+    <!-- Loading indicator (shown while generating) -->
+    <ProgressBar
+        android:id="@+id/table_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="48dp"
+        android:visibility="gone"
+        android:indeterminate="true"
+        android:layout_weight="0" />
+
+    <!-- Table -->
     <HorizontalScrollView
+        android:id="@+id/table_scroll_h"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -79,10 +104,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:stretchColumns="*" />
+                android:stretchColumns="*"
+                android:visibility="gone" />
 
         </ScrollView>
-
     </HorizontalScrollView>
 
 </LinearLayout>

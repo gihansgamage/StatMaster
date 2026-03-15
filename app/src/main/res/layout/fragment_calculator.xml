@@ -52,40 +52,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <!-- Z: only needs Z value -->
                     <RadioButton
                         android:id="@+id/radio_normal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Normal (Z)"
+                        android:text="Normal (Z)  —  Z value"
                         android:textSize="14sp"
                         android:checked="true" />
 
+                    <!-- t: df + α -->
                     <RadioButton
                         android:id="@+id/radio_t"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Student's t"
+                        android:text="Student's t  —  df + α"
                         android:textSize="14sp" />
 
+                    <!-- χ²: df + α -->
                     <RadioButton
                         android:id="@+id/radio_chisquare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Chi-square (χ²)"
+                        android:text="Chi-square (χ²)  —  df + α"
                         android:textSize="14sp" />
 
+                    <!-- F: df1 + df2 + α -->
                     <RadioButton
                         android:id="@+id/radio_f"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="F Distribution"
+                        android:text="F Distribution  —  df₁ + df₂ + α"
                         android:textSize="14sp" />
 
+                    <!-- Log: base + value -->
                     <RadioButton
-                        android:id="@+id/radio_lognormal"
+                        android:id="@+id/radio_log"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Log-Normal"
+                        android:text="Log  —  base + value"
                         android:textSize="14sp" />
 
                 </RadioGroup>
@@ -118,7 +123,6 @@
                     android:textColor="@color/text_primary"
                     android:layout_marginBottom="4dp" />
 
-                <!-- Hint text explaining what parameters are needed -->
                 <TextView
                     android:id="@+id/params_hint"
                     android:layout_width="match_parent"
@@ -128,14 +132,14 @@
                     android:textColor="@color/text_hint"
                     android:layout_marginBottom="12dp" />
 
-                <!-- ── NORMAL: z-score, mean, std dev ── -->
+                <!-- ── NORMAL: Z value only ── -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/z_score_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     style="@style/InputStyle"
-                    android:hint="Z-Score (x)">
+                    android:hint="Z-Score">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/z_score_input"
@@ -144,41 +148,7 @@
                         android:inputType="numberDecimal|numberSigned" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/mean_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/InputStyle"
-                    android:hint="Mean (μ)"
-                    android:visibility="gone">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/mean_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal|numberSigned"
-                        android:text="0" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/std_dev_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/InputStyle"
-                    android:hint="Standard Deviation (σ)"
-                    android:visibility="gone">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/std_dev_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:text="1" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- ── T / CHI-SQUARE: degrees of freedom + significance level ── -->
+                <!-- ── T / χ²: df ── -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/df_layout"
                     android:layout_width="match_parent"
@@ -195,14 +165,14 @@
                         android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- t-value / chi-square value (reused field, label set in code) -->
+                <!-- Observed t-value (kept for future use / backward compat but hidden by default) -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/test_stat_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     style="@style/InputStyle"
-                    android:hint="t-value"
+                    android:hint="Observed statistic"
                     android:visibility="gone">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -212,6 +182,24 @@
                         android:inputType="numberDecimal|numberSigned" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Observed χ² value field (kept for backward compat but not shown in new flow) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/chi_value_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/InputStyle"
+                    android:hint="Observed χ² value"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/chi_value_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- ── T / χ²: α ── -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/alpha_layout"
                     android:layout_width="match_parent"
@@ -229,7 +217,7 @@
                         android:text="0.05" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- ── F: df1, df2, significance level, F-value ── -->
+                <!-- ── F: df1 ── -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/df1_layout"
                     android:layout_width="match_parent"
@@ -246,6 +234,7 @@
                         android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- ── F: df2 ── -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/df2_layout"
                     android:layout_width="match_parent"
@@ -262,6 +251,7 @@
                         android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- F observed value (kept hidden — not needed in simplified flow) -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/f_value_layout"
                     android:layout_width="match_parent"
@@ -278,6 +268,7 @@
                         android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- ── F: α ── -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/f_alpha_layout"
                     android:layout_width="match_parent"
@@ -295,55 +286,38 @@
                         android:text="0.05" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- ── LOG-NORMAL: x, meanLog (μ), sdLog (σ) ── -->
+                <!-- ── LOG: base ── -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/ln_x_layout"
+                    android:id="@+id/log_base_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     style="@style/InputStyle"
-                    android:hint="Value (x > 0)"
+                    android:hint="Base  (e.g. 3 for log₃)"
                     android:visibility="gone">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/ln_x_input"
+                        android:id="@+id/log_base_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- ── LOG: value ── -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/ln_mean_layout"
+                    android:id="@+id/log_value_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     style="@style/InputStyle"
-                    android:hint="Mean of ln(X)  —  μ"
+                    android:hint="Value  (e.g. 25)"
                     android:visibility="gone">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/ln_mean_input"
+                        android:id="@+id/log_value_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="numberDecimal|numberSigned"
-                        android:text="0" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/ln_sd_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/InputStyle"
-                    android:hint="Std Dev of ln(X)  —  σ"
-                    android:visibility="gone">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/ln_sd_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:text="1" />
+                        android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
